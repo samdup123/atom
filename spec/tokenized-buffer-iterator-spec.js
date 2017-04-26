@@ -17,16 +17,6 @@ describe('TokenizedBufferIterator', () => {
           } else {
             return null
           }
-        },
-
-        grammar: {
-          scopeForId (id) {
-            return {
-              '-1': 'foo', '-2': 'foo',
-              '-3': 'bar', '-4': 'bar',
-              '-5': 'baz', '-6': 'baz'
-            }[id]
-          }
         }
       }
 
@@ -34,57 +24,57 @@ describe('TokenizedBufferIterator', () => {
 
       expect(iterator.seek(Point(0, 0))).toEqual([])
       expect(iterator.getPosition()).toEqual(Point(0, 0))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--foo'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual([1])
 
       iterator.moveToSuccessor()
-      expect(iterator.getCloseTags()).toEqual(['syntax--foo'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--bar'])
+      expect(iterator.getCloseScopeIds()).toEqual([1])
+      expect(iterator.getOpenScopeIds()).toEqual([2])
 
       expect(iterator.seek(Point(0, 1))).toEqual(['syntax--baz'])
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--bar'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--bar'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual(['syntax--bar', 'syntax--baz'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--baz'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--bar', 'syntax--baz'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--baz'])
 
       expect(iterator.seek(Point(0, 3))).toEqual(['syntax--baz'])
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--bar'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--bar'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual(['syntax--bar', 'syntax--baz'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--baz'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--bar', 'syntax--baz'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--baz'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 7))
-      expect(iterator.getCloseTags()).toEqual(['syntax--baz'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--bar'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--baz'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--bar'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 7))
-      expect(iterator.getCloseTags()).toEqual(['syntax--bar'])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--bar'])
+      expect(iterator.getOpenScopeIds()).toEqual([])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(1, 0))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual([])
 
       expect(iterator.seek(Point(0, 5))).toEqual(['syntax--baz'])
       expect(iterator.getPosition()).toEqual(Point(0, 7))
-      expect(iterator.getCloseTags()).toEqual(['syntax--baz'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--bar'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--baz'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--bar'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 7))
-      expect(iterator.getCloseTags()).toEqual(['syntax--bar'])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--bar'])
+      expect(iterator.getOpenScopeIds()).toEqual([])
     })
   })
 
@@ -110,17 +100,17 @@ describe('TokenizedBufferIterator', () => {
 
       iterator.seek(Point(0, 0))
       expect(iterator.getPosition()).toEqual(Point(0, 0))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--foo'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--foo'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 0))
-      expect(iterator.getCloseTags()).toEqual(['syntax--foo'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--foo'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--foo'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--foo'])
 
       iterator.moveToSuccessor()
-      expect(iterator.getCloseTags()).toEqual(['syntax--foo'])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--foo'])
+      expect(iterator.getOpenScopeIds()).toEqual([])
     })
 
     it("reports a boundary at line end if the next line's open scopes don't match the containing tags for the current line", () => {
@@ -162,28 +152,28 @@ describe('TokenizedBufferIterator', () => {
 
       iterator.seek(Point(0, 0))
       expect(iterator.getPosition()).toEqual(Point(0, 0))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--foo'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--foo'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual(['syntax--foo'])
-      expect(iterator.getOpenTags()).toEqual(['syntax--qux'])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--foo'])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--qux'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(0, 3))
-      expect(iterator.getCloseTags()).toEqual(['syntax--qux'])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--qux'])
+      expect(iterator.getOpenScopeIds()).toEqual([])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(1, 0))
-      expect(iterator.getCloseTags()).toEqual([])
-      expect(iterator.getOpenTags()).toEqual(['syntax--foo'])
+      expect(iterator.getCloseScopeIds()).toEqual([])
+      expect(iterator.getOpenScopeIds()).toEqual(['syntax--foo'])
 
       iterator.moveToSuccessor()
       expect(iterator.getPosition()).toEqual(Point(2, 0))
-      expect(iterator.getCloseTags()).toEqual(['syntax--foo'])
-      expect(iterator.getOpenTags()).toEqual([])
+      expect(iterator.getCloseScopeIds()).toEqual(['syntax--foo'])
+      expect(iterator.getOpenScopeIds()).toEqual([])
     })
   })
 })

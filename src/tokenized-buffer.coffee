@@ -8,6 +8,8 @@ ScopeDescriptor = require './scope-descriptor'
 TokenizedBufferIterator = require './tokenized-buffer-iterator'
 NullGrammar = require './null-grammar'
 
+prefixedScopes = new Map()
+
 module.exports =
 class TokenizedBuffer extends Model
   grammar: null
@@ -45,6 +47,19 @@ class TokenizedBuffer extends Model
 
   buildIterator: ->
     new TokenizedBufferIterator(this)
+
+  classNameForScopeId: (id) ->
+    scope = @grammar.scopeForId(toFirstMateScopeId(id))
+    if scope
+      prefixedScope = prefixedScopes.get(scope)
+      if prefixedScope
+        prefixedScope
+      else
+        prefixedScope = "syntax--#{scope.replace(/\./g, ' syntax--')}"
+        prefixedScopes.set(scope, prefixedScope)
+        prefixedScope
+    else
+      null
 
   getInvalidatedRanges: ->
     []
